@@ -1,0 +1,14 @@
+Flask==3.0.0
+requests==2.31.0
+pdfplumber==0.10.3
+Werkzeug==3.0.1
+gunicorn==21.2.0
+
+# Telegram bot
+pyTelegramBotAPI==4.16.1
+
+# JWT
+PyJWT==2.8.0
+
+# Environment variables (.env)
+python-dotenv==1.0.1
