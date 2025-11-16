@@ -39,8 +39,7 @@ RUN gdown --fuzzy "https://drive.google.com/uc?id=1y1HEjacQjgxP6650Mt5_soHGPOMxA
 # Переменные окружения
 ENV WINK_MODELS_DIR="/app/models_v5" \
     TEMP_DIR="/app/temp_bot_files" \
-    PYTHONUNBUFFERED=1 \
-    TELEGRAM_BOT_TOKEN="<your_token>"
+    PYTHONUNBUFFERED=1
 
 # Очистка кэша apt
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
