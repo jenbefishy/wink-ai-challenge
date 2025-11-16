@@ -102,8 +102,14 @@ def start_result_monitor(bot):
 
             for job in finished:
                 chat_id = job["input"]["tg_chat_id"]
-                bot.send_document(chat_id, ("result.xlsx", job["result"]["file_xlsx"]))
-                bot.send_document(chat_id, ("result.csv", job["result"]["file_csv"]))
+                fmt = job.get("desired_format", "both")
+
+                if fmt in ("xlsx", "both"):
+                    bot.send_document(chat_id, ("result.xlsx", job["result"]["file_xlsx"]))
+
+                if fmt in ("csv", "both"):
+                    bot.send_document(chat_id, ("result.csv", job["result"]["file_csv"]))
+
                 bot.send_message(chat_id, "Готово ✔️")
 
                 with LOCK:
