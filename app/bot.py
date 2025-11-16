@@ -1,5 +1,3 @@
-# bot.py - Оптимизированная версия без таймаутов
-
 import asyncio
 import os
 from pathlib import Path
@@ -519,7 +517,7 @@ async def process_collected_files(messages: List[Message], state: FSMContext, bo
         return
     
     # ОДНО обновление после загрузки всех
-    await asyncio.sleep(1)  # Пауза перед обновлением
+    await asyncio.sleep(1) 
     
     files_list = "\n".join([f"  ✓ {info['name'][:30]}..." for info in file_infos])
     
@@ -535,7 +533,7 @@ async def process_collected_files(messages: List[Message], state: FSMContext, bo
         selected_columns=set()
     )
     
-    await asyncio.sleep(1)  # Пауза перед следующим сообщением
+    await asyncio.sleep(1) 
     await show_columns_selection(first_message, state)
     await state.set_state(ProcessingStates.choosing_columns)
 
@@ -809,20 +807,7 @@ async def main():
     """Главная функция"""
     from aiogram.client.session.aiohttp import AiohttpSession
     
-    # Вариант 1: Простое решение с числовым таймаутом
     session = AiohttpSession(timeout=90)
-    
-    # Вариант 2: Кастомная сессия (раскомментировать если нужно)
-    """
-    from aiohttp import ClientTimeout
-    
-    class CustomSession(AiohttpSession):
-        @property
-        def timeout(self) -> int:
-            return 90
-    
-    session = CustomSession(timeout=ClientTimeout(total=90, connect=30, sock_read=30))
-    """
     
     bot = Bot(token=BOT_TOKEN, session=session)
     dp = Dispatcher(storage=MemoryStorage())
