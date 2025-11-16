@@ -12,17 +12,18 @@ bot = telebot.TeleBot(Config.BOT_TOKEN, parse_mode="HTML")
 @bot.message_handler(commands=["start"])
 def start_cmd(message):
     log.info(f"/start от {message.chat.id}")
-    bot.reply_to(message, "👋 Привет! Отправь PDF файл сценария.")
+    bot.reply_to(message, "👋 Привет! Это бот CinematicWizard. Можешь отправлять pdf или docx файлы сценариев!")
 
 
 @bot.message_handler(content_types=["document"])
-def handle_pdf(message):
+def handle_file(message):
     doc = message.document
     chat_id = message.chat.id
     log.info(f"Получен файл {doc.file_name} от {chat_id}")
 
-    if not doc.file_name.lower().endswith(".pdf"):
-        bot.reply_to(message, "Отправь PDF 🙏")
+    fname = doc.file_name.lower()
+    if not (fname.endswith(".pdf") or fname.endswith(".docx")):
+        bot.reply_to(message, "Отправь PDF или DOCX 🙏")
         return
 
     file_info = bot.get_file(doc.file_id)
@@ -33,16 +34,16 @@ def handle_pdf(message):
         return
 
     try:
-        text = extract_text(file_bytes)
-    except Exception:
-        bot.reply_to(message, "Не удалось прочитать PDF 😞")
+        text = extract_text(file_bytes, fname)
+    except Exception as e:
+        log.error(f"Ошибка чтения {fname}: {e}")
+        bot.reply_to(message, f"Не удалось прочитать файл 😞")
         return
 
     job_id = create_job(text, "full", None, chat_id, message.message_id)
-    bot.reply_to(message, f"📄 Обработка началась!")
+    bot.reply_to(message, "📄 Обработка началась!")
 
     Thread(target=process_job, args=(job_id,), daemon=True).start()
-
 
 def start_bot():
     log.info("Telegram bot запущен")

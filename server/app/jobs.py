@@ -58,14 +58,23 @@ def process_job(job_id: str):
             ).json()
 
             if status["status"] == "done":
-                export = requests.get(
+                export_xlsx = requests.get(
                     f"{Config.PROCESSING_APP_URL}/v1/jobs/{external_id}/export?format=xlsx"
+                )
+                
+                export_csv = requests.get(
+                    f"{Config.PROCESSING_APP_URL}/v1/jobs/{external_id}/export?format=csv"
                 )
 
                 with LOCK:
                     job["status"] = "done"
-                    job["result"] = export.content
                     job["updated_at"] = now_iso()
+                    job["result"] = {
+                        "file_xlsx": export_xlsx.content,
+                        "file_csv": export_csv.content,
+                        "columns": status.get("columns", []),
+                        "scenes_count": len(status.get("scenes", []))
+                    }
 
                 log.info(f"Задача {job_id} завершена")
                 break
@@ -93,7 +102,8 @@ def start_result_monitor(bot):
 
             for job in finished:
                 chat_id = job["input"]["tg_chat_id"]
-                bot.send_document(chat_id, ("result.xlsx", job["result"]))
+                bot.send_document(chat_id, ("result.xlsx", job["result"]["file_xlsx"]))
+                bot.send_document(chat_id, ("result.csv", job["result"]["file_csv"]))
                 bot.send_message(chat_id, "Готово ✔️")
 
                 with LOCK:

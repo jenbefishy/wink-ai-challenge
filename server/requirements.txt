@@ -12,3 +12,6 @@ PyJWT==2.8.0
 
 # Environment variables (.env)
 python-dotenv==1.0.1
+
+# DOCX support
+python-docx==0.8.11
