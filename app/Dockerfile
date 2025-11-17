@@ -32,9 +32,10 @@ RUN pip install --no-cache-dir -U pip && \
 COPY . .
 
 # Скачиваем и распаковываем модели
-RUN gdown --fuzzy "https://drive.google.com/uc?id=1y1HEjacQjgxP6650Mt5_soHGPOMxArm3" -O /app/models.zip && \
+RUN gdown --fuzzy "https://drive.google.com/uc?id=1y1HEjacQjgxP6650Mt5_soHGPOMxArm3" -O /app/models_v5.zip && \
+    unzip -q /app/models_v5.zip -d /app && \
     rm /app/models_v5.zip && \
-    chmod -R a+rw /app/models_v5
+    chmod -R a+rwX /app/models_v5
 
 # Переменные окружения
 ENV WINK_MODELS_DIR="/app/models_v5" \
